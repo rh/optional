@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="nant" default="build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <property name="configuration"  value="Release" />
+  <property name="verbose"        value="false" />
+  <property name="base.dir"       value="${directory::get-current-directory()}" />
+  <property name="build.base.dir" value="${path::combine(base.dir, 'build')}" />
+  <property name="build.dir"      value="${path::combine(build.base.dir, configuration)}" />
+  <property name="src.dir"        value="${path::combine(base.dir, 'src')}" />
+  <property name="lib.dir"        value="${path::combine(base.dir, 'lib')}" />
+
+  <target name="build">
+    <delete dir="${build.base.dir}" />
+    <mkdir dir="${build.dir}" />
+    <csc target="library" warnaserror="true" debug="true" output="${build.dir}/Optional.dll">
+      <nowarn>
+        <!-- 1591: Missing XML comment for publicly visible type or member 'Type_or_Member' -->
+        <warning number="1591" />
+        <!-- 1573: Parameter 'parameter' has no matching param tag in the XML comment for 'parameter' (but other parameters do) -->
+        <warning number="1573" />
+      </nowarn>
+      <sources>
+        <include name="${src.dir}/Optional/**/*.cs" />
+      </sources>
+    </csc>
+  </target>
+
+</project>
