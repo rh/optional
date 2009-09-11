@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Optional.Exceptions;
 
@@ -8,6 +9,22 @@ namespace Optional.Parsers
     /// </summary>
     public class NameValueParser
     {
+        /// <summary>
+        /// The action which is called when a value without an option is encountered.
+        /// The default action is to throw a <see cref="MissingOptionException"/>.
+        /// </summary>
+        /// <example>
+        /// This example shows how the parser can save all values without an option:
+        /// <code>
+        /// <![CDATA[
+        /// var values = new List<string>();
+        /// var parser = new NameValueParser();
+        /// parser.OnMissingOption = value => values.Add(value);
+        /// ]]>
+        /// </code>
+        /// </example>
+        public Action<string> OnMissingOption = value => { throw new MissingOptionException(value); };
+
         /// <summary>
         /// Creates a dictionary with name/value pairs from the supplied command-line arguments.
         /// </summary>
@@ -34,9 +51,15 @@ namespace Optional.Parsers
                 {
                     if (name == null)
                     {
-                        throw new MissingOptionException(arg);
+                        if (OnMissingOption != null)
+                        {
+                            OnMissingOption(arg);
+                        }
                     }
-                    options[name] = arg;
+                    else
+                    {
+                        options[name] = arg;
+                    }
                     name = null;
                 }
             }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Optional.Exceptions;
 using Optional.Parsers;
 using Xunit;
@@ -28,6 +29,20 @@ namespace Optional.Tests
 
         [Fact]
         public void CreateListOfOptionsWithoutOption()
+        {
+            var values = new List<string>();
+
+            var parser = new NameValueParser();
+            // Replace NameValueParser's default implementation of
+            // OnMissingOption, which is to throw an MissingOptionException
+            parser.OnMissingOption = value => values.Add(value);
+            parser.Parse(new[] {"foo"});
+
+            Assert.Contains("foo", values);
+        }
+
+        [Fact]
+        public void CreateListOfOptionsWithoutOption2()
         {
             var parser = new NameValueParser();
             try
