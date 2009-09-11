@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="nant" default="build" xmlns="http://nant.sf.net/schemas/nant.xsd">
+<project name="nant" default="all" xmlns="http://nant.sf.net/schemas/nant.xsd">
 
   <property name="configuration"  value="Release" />
   <property name="verbose"        value="false" />
@@ -8,21 +8,43 @@
   <property name="build.dir"      value="${path::combine(build.base.dir, configuration)}" />
   <property name="src.dir"        value="${path::combine(base.dir, 'src')}" />
   <property name="lib.dir"        value="${path::combine(base.dir, 'lib')}" />
+  <property name="tools.dir"      value="${path::combine(base.dir, 'tools')}" />
+
+  <target name="all" depends="test" />
 
   <target name="build">
     <delete dir="${build.base.dir}" />
     <mkdir dir="${build.dir}" />
     <csc target="library" warnaserror="true" debug="true" output="${build.dir}/Optional.dll">
-      <nowarn>
-        <!-- 1591: Missing XML comment for publicly visible type or member 'Type_or_Member' -->
-        <warning number="1591" />
-        <!-- 1573: Parameter 'parameter' has no matching param tag in the XML comment for 'parameter' (but other parameters do) -->
-        <warning number="1573" />
-      </nowarn>
       <sources>
         <include name="${src.dir}/Optional/**/*.cs" />
       </sources>
     </csc>
+    <csc target="library" warnaserror="true" debug="true" output="${build.dir}/Optional.Tests.dll">
+      <sources>
+        <include name="${src.dir}/Optional.Tests/**/*.cs" />
+      </sources>
+      <references>
+        <lib>
+          <include name="${build.dir}" />
+          <include name="${lib.dir}" />
+        </lib>
+        <include name="Optional.dll" />
+        <include name="${lib.dir}/xunit.dll" />
+      </references>
+    </csc>
+    <copy todir="${build.dir}">
+      <fileset basedir="${lib.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="test" depends="build">
+    <exec program="${tools.dir}/xunit/xunit.console.exe" basedir="${build.dir}">
+      <arg value="${build.dir}/Optional.Tests.dll" />
+      <arg value="/noshadow" />
+    </exec>
   </target>
 
 </project>
