@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultCommand.cs" />
     <Compile Include="FastCommand.cs" />
     <Compile Include="FooCommand.cs" />
     <Compile Include="Options.cs" />

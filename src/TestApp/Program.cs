@@ -16,7 +16,7 @@ namespace TestApp
 //                Console.WriteLine(new string('-', 64));
 //                Console.WriteLine();
 
-                var factory = new CommandFactory(args);
+                var factory = new CommandFactory {Default = new DefaultCommand()};
                 factory.Register<FooCommand>();
                 factory.Register<FastCommand>();
                 var command = factory.Create(args);

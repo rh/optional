@@ -8,7 +8,18 @@ namespace Optional.Commands
     public class CommandFactory
     {
         public IApplicationContext Context { get; set; }
+
         public IList<ICommand> Commands { get; set; }
+
+        /// <summary>
+        /// The command which is returned when no arguments are given.
+        /// This command does not need to be registered, so it will not be
+        /// shown in the list of available commands.
+        /// </summary>
+        /// <remarks>
+        /// This property defaults to <see cref="HelpCommand"/>.
+        /// </remarks>
+        public ICommand Default { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="CommandFactory"/> and registers <see cref="HelpCommand"/>
@@ -22,16 +33,18 @@ namespace Optional.Commands
         /// factory.Commands.Clear();
         /// </code>
         /// </remarks>
-        public CommandFactory(string[] args)
+        public CommandFactory()
         {
-            Context = new ApplicationContext(args);
             Commands = new List<ICommand>();
             Register<HelpCommand>();
             Register<VersionCommand>();
+            Default = new HelpCommand();
         }
 
         public ICommand Create(string[] args)
         {
+            Context = new ApplicationContext(args);
+
             var command = CreateInternal(args);
             if (command is ICommandsAware)
             {
@@ -46,9 +59,7 @@ namespace Optional.Commands
         {
             if (args == null || args.Length == 0)
             {
-                // TODO: what if a client has removed HelpCommand from Commands?
-                // In that case this usage would be inconsistent
-                return new HelpCommand();
+                return Default;
             }
 
             var name = args[0].ToLower();
