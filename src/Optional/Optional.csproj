@@ -68,7 +68,7 @@
     <Compile Include="IApplicationContext.cs" />
     <Compile Include="Parsers\NameValueParser.cs" />
     <Compile Include="Option.cs" />
-    <Compile Include="Parsers\OptionParser.cs" />
+    <Compile Include="Parsers\Options.cs" />
     <Compile Include="Parsers\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

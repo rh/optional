@@ -11,9 +11,8 @@ namespace Optional.Tests
         {
             const string Value = "value";
 
-            var obj = new Options {Foo = Value, Bar = Value, FooBar = Value, Switch = true};
-            var parser = new OptionParser();
-            var options = parser.Parse(obj);
+            var obj = new TestOptions {Foo = Value, Bar = Value, FooBar = Value, Switch = true};
+            var options = Options.Create(obj);
 
             Assert.Equal(4, options.Count);
 

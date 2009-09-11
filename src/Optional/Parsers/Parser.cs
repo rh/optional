@@ -7,15 +7,15 @@ namespace Optional.Parsers
 {
     public class Parser
     {
-        public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$", RegexOptions.Compiled);
-        public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$", RegexOptions.Compiled);
+        public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
+        public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
 
         private IList<Option> availableOptions = new List<Option>();
         private readonly IList<Option> setOptions = new List<Option>();
 
         public T Parse<T>(string[] args, T options)
         {
-            availableOptions = new OptionParser().Parse(options);
+            availableOptions = Options.Create(options);
             Option current = null;
 
             for (var i = 0; i < args.Length; i++)

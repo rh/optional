@@ -29,7 +29,7 @@ namespace Optional.Commands
                 var command = commands.First();
                 WriteLine("{0}: {1}", name, DescriptionOf(command));
 
-                var options = new OptionParser().Parse(command);
+                var options = Options.Create(command);
                 if (options.Count > 0)
                 {
                     WriteLine();

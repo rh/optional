@@ -29,7 +29,7 @@ namespace Optional.Tests
         public void Parse()
         {
             var parser = new Parser();
-            parser.Parse<Options>(new[] {"-f", "foo", "-b", "bar"});
+            parser.Parse<TestOptions>(new[] {"-f", "foo", "-b", "bar"});
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Optional.Tests
             var parser = new Parser();
             try
             {
-                parser.Parse<Options>(new[] {"--foo", "foo", "--bar", "bar", "--foo-bar", "foobar"});
+                parser.Parse<TestOptions>(new[] {"--foo", "foo", "--bar", "bar", "--foo-bar", "foobar"});
             }
             catch (InvalidOptionException e)
             {
@@ -56,7 +56,7 @@ namespace Optional.Tests
         public void ParseOptionAndValue()
         {
             var parser = new Parser();
-            var options = parser.Parse<Options>(new[] {"-f", "foo"});
+            var options = parser.Parse<TestOptions>(new[] {"-f", "foo"});
             Assert.Equal(options.Foo, "foo");
         }
 
@@ -66,7 +66,7 @@ namespace Optional.Tests
             var parser = new Parser();
             try
             {
-                parser.Parse<Options>(new[] {"foo"});
+                parser.Parse<TestOptions>(new[] {"foo"});
             }
             catch (MissingOptionException)
             {
@@ -81,7 +81,7 @@ namespace Optional.Tests
             var parser = new Parser();
             try
             {
-                parser.Parse<Options>(new[] {"-f", "foo", "-f"});
+                parser.Parse<TestOptions>(new[] {"-f", "foo", "-f"});
             }
             catch (DuplicateOptionException)
             {
@@ -96,7 +96,7 @@ namespace Optional.Tests
             var parser = new Parser();
             try
             {
-                parser.Parse<Options>(new[] {"-f", "-f"});
+                parser.Parse<TestOptions>(new[] {"-f", "-f"});
             }
             catch (DuplicateOptionException)
             {
@@ -111,7 +111,7 @@ namespace Optional.Tests
             var parser = new Parser();
             try
             {
-                parser.Parse<Options>(new[] {"-x"});
+                parser.Parse<TestOptions>(new[] {"-x"});
             }
             catch (InvalidOptionException)
             {
@@ -125,7 +125,7 @@ namespace Optional.Tests
         {
             const string Value = "This is a pre-set value.";
 
-            var options = new Options {Foo = Value};
+            var options = new TestOptions {Foo = Value};
             var parser = new Parser();
             parser.Parse(new string[] {}, options);
             Assert.Equal(Value, options.Foo);
@@ -137,7 +137,7 @@ namespace Optional.Tests
         [Fact]
         public void CreateWithObject2()
         {
-            var options = new Options();
+            var options = new TestOptions();
             var parser = new Parser();
             try
             {
@@ -153,7 +153,7 @@ namespace Optional.Tests
         [Fact]
         public void CreateWithObject3()
         {
-            var options = new Options();
+            var options = new TestOptions();
             var parser = new Parser();
             parser.Parse(new[] {"--foo", "foo", "-s"}, options);
             Assert.Equal("foo", options.Foo);

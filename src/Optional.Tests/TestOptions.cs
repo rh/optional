@@ -2,7 +2,7 @@ using Optional.Attributes;
 
 namespace Optional.Tests
 {
-    public class Options
+    public class TestOptions
     {
         [Required, Description("Sets foo")]
         public string Foo { get; set; }

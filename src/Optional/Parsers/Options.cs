@@ -4,9 +4,9 @@ using Optional.Attributes;
 
 namespace Optional.Parsers
 {
-    public class OptionParser
+    public static class Options
     {
-        public IList<Option> Parse(object obj)
+        public static IList<Option> Create(object obj)
         {
             var options = new List<Option>();
             foreach (var property in PropertiesOf(obj))
