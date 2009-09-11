@@ -17,9 +17,9 @@ namespace Optional.Commands
         public override int Execute()
         {
             // args[0] is 'help', args[1] is the name of the command to get help on
-            if (ApplicationContext.ApplicationArguments.Length == 2)
+            if (ApplicationContext.Arguments.Length == 2)
             {
-                var name = ApplicationContext.ApplicationArguments[1];
+                var name = ApplicationContext.Arguments[1];
                 var commands = Commands.Where(c => c.Name == name);
                 if (commands.Count() == 0)
                 {
@@ -43,19 +43,19 @@ namespace Optional.Commands
             }
 
             // This state is always invalid
-            if (ApplicationContext.ApplicationArguments.Length > 2)
+            if (ApplicationContext.Arguments.Length > 2)
             {
                 WriteLine("Invalid options.");
-                WriteLine("Usage: {0} help <command>", ApplicationContext.ApplicationName);
+                WriteLine("Usage: {0} help <command>", ApplicationContext.Name);
                 return 1;
             }
 
-            WriteLine("Usage: {0} <command> [options]", ApplicationContext.ApplicationName);
+            WriteLine("Usage: {0} <command> [options]", ApplicationContext.Name);
 
             if (DisplayDescription)
             {
                 WriteLine();
-                WriteLine(ApplicationContext.ApplicationDescription);
+                WriteLine(ApplicationContext.Description);
             }
 
             if (DisplayCopyRight)
@@ -64,7 +64,7 @@ namespace Optional.Commands
                 {
                     WriteLine();
                 }
-                WriteLine(ApplicationContext.ApplicationCopyright);
+                WriteLine(ApplicationContext.Copyright);
             }
 
             if (Commands != null)

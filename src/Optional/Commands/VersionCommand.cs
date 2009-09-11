@@ -7,7 +7,7 @@ namespace Optional.Commands
     {
         public override int Execute()
         {
-            WriteLine(ApplicationContext.ApplicationVersion);
+            WriteLine(ApplicationContext.Version);
             return 0;
         }
     }

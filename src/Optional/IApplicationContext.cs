@@ -11,21 +11,17 @@ namespace Optional
         TextWriter Debug { get; }
 
         /// <summary>The arguments as they were supplied to the application's Main method.</summary>
-        string[] ApplicationArguments { get; }
+        string[] Arguments { get; }
 
-        string ApplicationName { get; }
+        string Name { get; }
 
-        string ApplicationVersion { get; }
+        string Version { get; }
 
-        string ApplicationDescription { get; }
+        string Description { get; }
 
-        string ApplicationCopyright { get; }
+        string Copyright { get; }
 
         /// <summary>The directory in which the application is located.</summary>
-        string ApplicationDirectory { get; }
-
-        string ApplicationDataDirectory { get; }
-
-        string CurrentDirectory { get; }
+        string Location { get; }
     }
 }
