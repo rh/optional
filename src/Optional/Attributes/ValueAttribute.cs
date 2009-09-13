@@ -2,10 +2,9 @@ using System;
 
 namespace Optional.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public abstract class ValueAttribute : Attribute
     {
-        public string Value { get; set; }
+        public string Value { get; private set; }
 
         protected ValueAttribute(string value)
         {
