@@ -47,6 +47,7 @@
     <Compile Include="Attributes\NameAttribute.cs" />
     <Compile Include="Attributes\ShortNameAttribute.cs" />
     <Compile Include="Attributes\RequiredAttribute.cs" />
+    <Compile Include="Attributes\UsageAttribute.cs" />
     <Compile Include="Attributes\ValueAttribute.cs" />
     <Compile Include="Commands\AmbiguousMatchCommand.cs" />
     <Compile Include="Commands\Command.cs" />
