@@ -9,7 +9,7 @@ namespace Optional.Commands
 	public class HelpCommand : Command, ICommandsAware, IArgumentsAware
 	{
 		public static bool DisplayDescription = true;
-		public static bool DisplayCopyRight = true;
+		public static bool DisplayCopyRight;
 
 		[Ignore]
 		public IList<ICommand> Commands { get; set; }
