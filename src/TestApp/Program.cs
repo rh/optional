@@ -18,6 +18,7 @@ namespace TestApp
 
 				var factory = new CommandFactory {Default = new DefaultCommand()};
 				factory.Register<FooCommand>();
+				factory.Register<BarCommand>();
 				factory.Register<FastCommand>();
 				var command = factory.Create(args);
 				command.Execute();

@@ -6,6 +6,7 @@ using Optional.Parsers;
 namespace Optional.Commands
 {
 	[Description("Displays help")]
+    [Usage("[command]")]
 	public class HelpCommand : Command, ICommandsAware, IArgumentsAware
 	{
 		public static bool DisplayDescription = true;
@@ -28,6 +29,7 @@ namespace Optional.Commands
 
 				var command = commands.First();
 				WriteLine("{0}: {1}", name, DescriptionOf(command));
+				WriteLine("Usage: {0}", UsageOf(command));
 
 				var options = Options.Create(command);
 				if (options.Count > 0)
@@ -50,7 +52,7 @@ namespace Optional.Commands
 				return 1;
 			}
 
-			WriteLine("Usage: {0} <command> [options]", ApplicationContext.Name);
+			WriteLine("Usage: {0} <command>", ApplicationContext.Name);
 
 			if (DisplayDescription)
 			{
@@ -86,7 +88,17 @@ namespace Optional.Commands
 				var attribute = (DescriptionAttribute) command.GetType().GetCustomAttributes(typeof(DescriptionAttribute), false)[0];
 				return attribute.Value;
 			}
-			return "(no description)";
+			return string.Empty;
+		}
+
+		private string UsageOf(ICommand command)
+		{
+			if (command.GetType().IsDefined(typeof(UsageAttribute), false))
+			{
+				var attribute = (UsageAttribute) command.GetType().GetCustomAttributes(typeof(UsageAttribute), false)[0];
+				return string.Format("{0} {1} {2}", ApplicationContext.Name, command.Name, attribute.Value);
+			}
+			return string.Format("{0} {1}", ApplicationContext.Name, command.Name);
 		}
 	}
 }

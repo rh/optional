@@ -4,13 +4,11 @@ namespace Optional.Commands
 {
 	public abstract class Command : ICommand
 	{
-		protected Command()
-		{
-			Name = GetType().Name.ToLower().Replace("command", "");
-		}
-
 		[Ignore]
-		public string Name { get; set; }
+		string ICommand.Name
+		{
+			get { return GetType().Name.ToLower().Replace("command", ""); }
+		}
 
 		[Ignore]
 		public IApplicationContext ApplicationContext { get; set; }

@@ -39,12 +39,19 @@ namespace Optional
 		}
 
 		public string[] Arguments { get; set; }
+
 		public string Name { get; set; }
+
 		public string Version { get; set; }
+
 		public string Description { get; set; }
+
 		public string Copyright { get; set; }
+
 		public string Location { get; set; }
+
 		public TextWriter Out { get; set; }
+
 		public TextWriter Debug { get; set; }
 	}
 }

@@ -14,9 +14,7 @@ namespace Optional.Exceptions
 			this.name = name;
 		}
 
-		/// <summary>
-		/// Gets the name of the invalid option.
-		/// </summary>
+		/// <summary>The name of the invalid option.</summary>
 		public string Name
 		{
 			get { return name; }
