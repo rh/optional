@@ -1,59 +1,52 @@
-using System;
-using System.Collections.Generic;
-using Optional.Exceptions;
 using Optional.Parsers;
 using Xunit;
 
 namespace Optional.Tests
 {
-	public class NameValueParserFixture
-	{
-		[Fact]
-		public void CreateListOfOptions()
-		{
-			var parser = new NameValueParser();
-			var options = parser.Parse(new[] {"-f", "foo", "-b", "bar", "--baz"});
+    public class NameValueParserFixture
+    {
+        [Fact]
+        public void CreateListOfOptions()
+        {
+            var parser = new NameValueParser();
+            var options = parser.Parse(new[] {"-f", "foo", "-b", "bar", "--baz", "-x", "--last"});
 
-			Assert.NotEmpty(options);
-			Assert.Equal(3, options.Count);
+            Assert.NotEmpty(options);
+            Assert.Equal(5, options.Count);
 
-			Assert.True(options.ContainsKey("f"));
-			Assert.Equal("foo", options["f"]);
+            Assert.Equal("f", options[0].ShortName);
+            Assert.Equal(string.Empty, options[0].LongName);
+            Assert.Equal("foo", options[0].Value);
 
-			Assert.True(options.ContainsKey("b"));
-			Assert.Equal("bar", options["b"]);
+            Assert.Equal("b", options[1].ShortName);
+            Assert.Equal(string.Empty, options[1].LongName);
+            Assert.Equal("bar", options[1].Value);
 
-			Assert.True(options.ContainsKey("baz"));
-			Assert.Equal(null, options["baz"]);
-		}
+            Assert.Equal(string.Empty, options[2].ShortName);
+            Assert.Equal("baz", options[2].LongName);
+            Assert.Equal(null, options[2].Value);
 
-		[Fact]
-		public void CreateListOfOptionsWithoutOption()
-		{
-			var values = new List<string>();
+            Assert.Equal("x", options[3].ShortName);
+            Assert.Equal(string.Empty, options[3].LongName);
+            Assert.Equal(null, options[2].Value);
 
-			var parser = new NameValueParser();
-			// Replace NameValueParser's default implementation of
-			// OnMissingOption, which is to throw an MissingOptionException
-			parser.OnMissingOption = value => values.Add(value);
-			parser.Parse(new[] {"foo"});
+            Assert.Equal(string.Empty, options[4].ShortName);
+            Assert.Equal("last", options[4].LongName);
+            Assert.Equal(null, options[2].Value);
+        }
 
-			Assert.Contains("foo", values);
-		}
+        [Fact]
+        public void CreateOneOptionWithoutAValue()
+        {
+            var parser = new NameValueParser();
+            var options = parser.Parse(new[] {"foo"});
 
-		[Fact]
-		public void CreateListOfOptionsWithoutOption2()
-		{
-			var parser = new NameValueParser();
-			try
-			{
-				parser.Parse(new[] {"foo"});
-			}
-			catch (MissingOptionException)
-			{
-				return;
-			}
-			throw new Exception("MissingOptionException was expected, but was not thrown.");
-		}
-	}
+            Assert.NotEmpty(options);
+            Assert.Equal(1, options.Count);
+
+            Assert.True(options[0].ShortName == string.Empty);
+            Assert.True(options[0].LongName == string.Empty);
+            Assert.Equal("foo", options[0].Value);
+        }
+    }
 }

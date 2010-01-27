@@ -5,137 +5,146 @@ using Optional.Exceptions;
 
 namespace Optional.Parsers
 {
-	public class Parser
-	{
-		public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
-		public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
+    public class Parser
+    {
+        public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
+        public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
 
-		private IList<Option> availableOptions = new List<Option>();
-		private readonly IList<Option> setOptions = new List<Option>();
+        public Action<Option> OnDuplicateOption = option => { throw new DuplicateOptionException(option); };
 
-		public T Parse<T>(string[] args, T options)
-		{
-			availableOptions = Options.Create(options);
-			Option current = null;
+        public Action<string> OnInvalidOption = name => { throw new InvalidOptionException(name); };
 
-			for (var i = 0; i < args.Length; i++)
-			{
-				var arg = args[i];
-				if (ShortOption.IsMatch(arg))
-				{
-					var name = arg.Substring(1);
+        public Action<string> OnMissingOption = arg => { throw new MissingOptionException(arg); };
 
-					var option = FindByShortName(setOptions, name);
-					if (option != null)
-					{
-						throw new DuplicateOptionException(option);
-					}
+        private IList<Option> availableOptions = new List<Option>();
+        private readonly IList<Option> setOptions = new List<Option>();
 
-					option = FindByShortName(availableOptions, name);
-					if (option == null)
-					{
-						throw new InvalidOptionException(name);
-					}
+        public T Parse<T>(string[] args, T options)
+        {
+            availableOptions = Options.Create(options);
+            Option current = null;
 
-					// TODO: duplicate code
-					if (option.Type == typeof(bool))
-					{
-						option.Property.SetValue(options, true, null);
-					}
+            for (var i = 0; i < args.Length; i++)
+            {
+                var arg = args[i];
+                if (ShortOption.IsMatch(arg))
+                {
+                    var name = arg.Substring(1);
 
-					current = option;
-					setOptions.Add(current);
-					availableOptions.Remove(current);
-				}
-				else if (LongOption.IsMatch(arg))
-				{
-					var name = arg.Substring(2);
+                    var option = FindByShortName(setOptions, name);
+                    if (option != null)
+                    {
+                        OnDuplicateOption(option);
+                    }
 
-					var option = FindByLongName(setOptions, name);
-					if (option != null)
-					{
-						throw new DuplicateOptionException(option);
-					}
+                    option = FindByShortName(availableOptions, name);
+                    if (option == null)
+                    {
+                        OnInvalidOption(name);
+                    }
 
-					option = FindByLongName(availableOptions, name);
-					if (option == null)
-					{
-						throw new InvalidOptionException(name);
-					}
+                    // TODO: duplicate code
+                    if (option != null && option.Type == typeof(bool))
+                    {
+                        option.Property.SetValue(options, true, null);
+                    }
 
-					// TODO: duplicate code
-					if (option.Type == typeof(bool))
-					{
-						option.Property.SetValue(options, true, null);
-					}
+                    current = option;
+                    setOptions.Add(current);
+                    availableOptions.Remove(current);
+                }
+                else if (LongOption.IsMatch(arg))
+                {
+                    var name = arg.Substring(2);
 
-					current = option;
-					setOptions.Add(current);
-					availableOptions.Remove(current);
-				}
-				else
-				{
-					if (current == null)
-					{
-						throw new MissingOptionException(arg);
-					}
-					current.Value = arg;
-					current.Property.SetValue(options, arg, null);
-					current = null;
-				}
-			}
+                    var option = FindByLongName(setOptions, name);
+                    if (option != null)
+                    {
+                        OnDuplicateOption(option);
+                    }
 
-			CheckRequiredOptions(options);
-			return options;
-		}
+                    option = FindByLongName(availableOptions, name);
+                    if (option == null)
+                    {
+                        OnInvalidOption(name);
+                    }
 
-		public T Parse<T>(string[] args) where T : new()
-		{
-			return Parse(args, new T());
-		}
+                    // TODO: duplicate code
+                    if (option != null && option.Type == typeof(bool))
+                    {
+                        option.Property.SetValue(options, true, null);
+                    }
 
-		private void CheckRequiredOptions<T>(T options)
-		{
-			foreach (var option in availableOptions)
-			{
-				var value = option.Property.GetValue(options, null);
-				if (option.Required && (value == null || String.IsNullOrEmpty(value.ToString())))
-				{
-					throw new RequirementException(option);
-				}
-			}
+                    current = option;
+                    setOptions.Add(current);
+                    availableOptions.Remove(current);
+                }
+                else
+                {
+                    if (current == null)
+                    {
+                        OnMissingOption(arg);
+                    }
+                    else
+                    {
+                        current.Value = arg;
+                        current.Property.SetValue(options, arg, null);
+                        current = null;
+                    }
+                }
+            }
 
-			foreach (var option in setOptions)
-			{
-				if (option.Required && String.IsNullOrEmpty(option.Value))
-				{
-					throw new RequirementException(option);
-				}
-			}
-		}
+            CheckRequiredOptions(options);
+            return options;
+        }
 
-		private static Option FindByShortName(IEnumerable<Option> options, string shortName)
-		{
-			foreach (var option in options)
-			{
-				if (option.ShortName.Equals(shortName))
-				{
-					return option;
-				}
-			}
-			return null;
-		}
+        public T Parse<T>(string[] args) where T : new()
+        {
+            return Parse(args, new T());
+        }
 
-		private static Option FindByLongName(IEnumerable<Option> options, string longName)
-		{
-			foreach (var option in options)
-			{
-				if (option.LongName.Equals(longName))
-				{
-					return option;
-				}
-			}
-			return null;
-		}
-	}
+        private void CheckRequiredOptions<T>(T options)
+        {
+            foreach (var option in availableOptions)
+            {
+                var value = option.Property.GetValue(options, null);
+                if (option.Required && (value == null || String.IsNullOrEmpty(value.ToString())))
+                {
+                    throw new RequirementException(option);
+                }
+            }
+
+            foreach (var option in setOptions)
+            {
+                if (option.Required && String.IsNullOrEmpty(option.Value))
+                {
+                    throw new RequirementException(option);
+                }
+            }
+        }
+
+        private static Option FindByShortName(IEnumerable<Option> options, string shortName)
+        {
+            foreach (var option in options)
+            {
+                if (option.ShortName.Equals(shortName))
+                {
+                    return option;
+                }
+            }
+            return null;
+        }
+
+        private static Option FindByLongName(IEnumerable<Option> options, string longName)
+        {
+            foreach (var option in options)
+            {
+                if (option.LongName.Equals(longName))
+                {
+                    return option;
+                }
+            }
+            return null;
+        }
+    }
 }
