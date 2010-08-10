@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Optional.Parsers
 {
@@ -29,7 +30,20 @@ namespace Optional.Parsers
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                if (Parser.ShortOption.IsMatch(arg))
+
+                if (Parser.ShortOptionWithValue.IsMatch(arg))
+                {
+                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
+                    {
+                        option = new Option();
+                    }
+
+                    var values = Regex.Split(arg, "[:=]");
+                    option.ShortName = values[0].Substring(1);
+                    option.Value = values[1];
+                    options.Add(option);
+                }
+                else if (Parser.ShortOption.IsMatch(arg))
                 {
                     if (option.ShortName != string.Empty || option.LongName != string.Empty)
                     {
@@ -37,6 +51,18 @@ namespace Optional.Parsers
                     }
 
                     option.ShortName = arg.Substring(1);
+                    options.Add(option);
+                }
+                else if (Parser.LongOptionWithValue.IsMatch(arg))
+                {
+                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
+                    {
+                        option = new Option();
+                    }
+
+                    var values = Regex.Split(arg, "[:=]");
+                    option.LongName = values[0].Substring(2);
+                    option.Value = values[1];
                     options.Add(option);
                 }
                 else if (Parser.LongOption.IsMatch(arg))
@@ -51,6 +77,11 @@ namespace Optional.Parsers
                 }
                 else
                 {
+                    if (option.Value != string.Empty)
+                    {
+                        option = new Option();
+                    }
+
                     option.Value = arg;
                     if (!options.Contains(option))
                     {

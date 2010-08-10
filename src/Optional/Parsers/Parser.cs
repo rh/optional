@@ -8,7 +8,9 @@ namespace Optional.Parsers
     public class Parser
     {
         public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
+        public static Regex ShortOptionWithValue = new Regex("^-[a-zA-Z0-9]{1}[:=]{1}(.+)$");
         public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
+        public static Regex LongOptionWithValue = new Regex("^--[-a-zA-Z0-9]{1,}[:=]{1}([^:=]+)$");
 
         public Action<Option> OnDuplicateOption = option => { throw new DuplicateOptionException(option); };
 

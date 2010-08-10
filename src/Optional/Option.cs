@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Text;
 using Optional.Attributes;
 
 namespace Optional
@@ -27,6 +28,7 @@ namespace Optional
             LongName = string.Empty;
             Description = string.Empty;
             Required = false;
+            Value = string.Empty;
         }
 
         public Option(PropertyInfo property)
@@ -35,6 +37,7 @@ namespace Optional
             LongName = LongNameOf(property);
             Description = DescriptionOf(property);
             Required = IsRequired(property);
+            Value = string.Empty;
             Type = TypeOf(property);
             Property = property;
         }
@@ -81,15 +84,25 @@ namespace Optional
 
         public override string ToString()
         {
+            var output = new StringBuilder();
+
+
             if (!String.IsNullOrEmpty(ShortName))
             {
-                return ShortName;
+                output.AppendFormat("-{0} ", ShortName);
             }
+
             if (!String.IsNullOrEmpty(LongName))
             {
-                return LongName;
+                output.AppendFormat("--{0} ", LongName);
             }
-            return base.ToString();
+
+            if (!String.IsNullOrEmpty(Value))
+            {
+                output.AppendFormat("{0}", Value);
+            }
+
+            return output.ToString();
         }
     }
 }
