@@ -68,6 +68,7 @@
     <Compile Include="Exceptions\InvalidOptionexception.cs" />
     <Compile Include="Exceptions\MissingOptionException.cs" />
     <Compile Include="Exceptions\RequirementException.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="IApplicationContext.cs" />
     <Compile Include="Parsers\NameValueParser.cs" />
     <Compile Include="Option.cs" />

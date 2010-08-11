@@ -1,97 +1,52 @@
-using System.Collections.Generic;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Optional.Parsers
 {
-    /// <summary>
-    /// Parses command-line options into a list of <see cref="Option"/>s of which only the
-    /// <see cref="Option.ShortName"/>, <see cref="Option.LongName"/> or <see cref="Option.Value"/>
-    /// are set.
-    /// </summary>
-    /// <example>
-    /// A command-line such as <c>foo --bar -x y</c> will lead to a list of 3 options:
-    /// <list type="square">
-    /// <item>ShortName = "", LongName = "", Value = "foo"</item>
-    /// <item>ShortName = "", LongName = "bar", Value = ""</item>
-    /// <item>ShortName = "x", LongName = "", Value = "y"</item>
-    /// </list>
-    /// </example>
     public class NameValueParser
     {
+        public Action<string> OnShortOption = name => { };
+
+        public Action<string> OnLongOption = name => { };
+
+        public Action<string> OnValue = value => { };
+
         /// <summary>
-        /// Creates a list of options with only names and values set.
+        /// Parses <see cref="args"/> and calls <see cref="OnShortOption"/>, <see cref="OnLongOption"/>
+        /// and <see cref="OnValue"/> for every short option, long option and value encountered.
         /// </summary>
         /// <param name="args">The command-line arguments of the application.</param>
-        public IList<Option> Parse(string[] args)
+        public void Parse(string[] args)
         {
-            IList<Option> options = new List<Option>();
-            var option = new Option();
-
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
 
                 if (Parser.ShortOptionWithValue.IsMatch(arg))
                 {
-                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
-                    {
-                        option = new Option();
-                    }
-
                     var values = Regex.Split(arg, "[:=]");
-                    option.ShortName = values[0].Substring(1);
-                    option.Value = values[1];
-                    options.Add(option);
+                    OnShortOption(values[0].Substring(1));
+                    OnValue(values[1]);
                 }
                 else if (Parser.ShortOption.IsMatch(arg))
                 {
-                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
-                    {
-                        option = new Option();
-                    }
-
-                    option.ShortName = arg.Substring(1);
-                    options.Add(option);
+                    OnShortOption(arg.Substring(1));
                 }
                 else if (Parser.LongOptionWithValue.IsMatch(arg))
                 {
-                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
-                    {
-                        option = new Option();
-                    }
-
                     var values = Regex.Split(arg, "[:=]");
-                    option.LongName = values[0].Substring(2);
-                    option.Value = values[1];
-                    options.Add(option);
+                    OnLongOption(values[0].Substring(2));
+                    OnValue(values[1]);
                 }
                 else if (Parser.LongOption.IsMatch(arg))
                 {
-                    if (option.ShortName != string.Empty || option.LongName != string.Empty)
-                    {
-                        option = new Option();
-                    }
-
-                    option.LongName = arg.Substring(2);
-                    options.Add(option);
+                    OnLongOption(arg.Substring(2));
                 }
                 else
                 {
-                    if (option.Value != string.Empty)
-                    {
-                        option = new Option();
-                    }
-
-                    option.Value = arg;
-                    if (!options.Contains(option))
-                    {
-                        options.Add(option);
-                    }
-                    option = new Option();
+                    OnValue(arg);
                 }
             }
-
-            return options;
         }
     }
 }

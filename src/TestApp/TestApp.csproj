@@ -49,7 +49,7 @@
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="FastCommand.cs" />
     <Compile Include="FooCommand.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="TestAppOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

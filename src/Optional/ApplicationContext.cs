@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Optional.Extensions;
 using Optional.Parsers;
 
 namespace Optional
@@ -15,27 +16,17 @@ namespace Optional
         {
             Arguments = args;
 
-            Options = new NameValueParser().Parse(Arguments);
+            Options = args.ToOptions();
 
             var assembly = Assembly.GetEntryAssembly();
+
             Name = assembly.GetName().Name;
 
-            var version = assembly.GetName().Version;
-            Version = String.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            Version = assembly.Version();
 
-            Description = string.Empty;
-            if (assembly.IsDefined(typeof(AssemblyDescriptionAttribute), false))
-            {
-                var attribute = (AssemblyDescriptionAttribute) assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0];
-                Description = attribute.Description;
-            }
+            Description = assembly.Description();
 
-            Copyright = string.Empty;
-            if (assembly.IsDefined(typeof(AssemblyCopyrightAttribute), false))
-            {
-                var attribute = (AssemblyCopyrightAttribute) assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0];
-                Copyright = attribute.Copyright;
-            }
+            Copyright = assembly.Copyright();
 
             Location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
