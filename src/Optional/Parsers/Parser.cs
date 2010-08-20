@@ -5,10 +5,13 @@ namespace Optional.Parsers
 {
     public class Parser
     {
+        public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
+        public static Regex ShortOptionWithValue = new Regex("^-[a-zA-Z0-9]{1}[:=]{1}(.+)$");
+        public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
+        public static Regex LongOptionWithValue = new Regex("^--[-a-zA-Z0-9]{1,}[:=]{1}([^:=]+)$");
+
         public Action<string> OnShortOption = name => { };
-
         public Action<string> OnLongOption = name => { };
-
         public Action<string> OnValue = value => { };
 
         /// <summary>
@@ -22,23 +25,23 @@ namespace Optional.Parsers
             {
                 var arg = args[i];
 
-                if (ObjectParser.ShortOptionWithValue.IsMatch(arg))
+                if (ShortOptionWithValue.IsMatch(arg))
                 {
                     var values = Regex.Split(arg, "[:=]");
                     OnShortOption(values[0].Substring(1));
                     OnValue(values[1]);
                 }
-                else if (ObjectParser.ShortOption.IsMatch(arg))
+                else if (ShortOption.IsMatch(arg))
                 {
                     OnShortOption(arg.Substring(1));
                 }
-                else if (ObjectParser.LongOptionWithValue.IsMatch(arg))
+                else if (LongOptionWithValue.IsMatch(arg))
                 {
                     var values = Regex.Split(arg, "[:=]");
                     OnLongOption(values[0].Substring(2));
                     OnValue(values[1]);
                 }
-                else if (ObjectParser.LongOption.IsMatch(arg))
+                else if (LongOption.IsMatch(arg))
                 {
                     OnLongOption(arg.Substring(2));
                 }
