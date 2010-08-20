@@ -70,7 +70,7 @@
     <Compile Include="Exceptions\RequirementException.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="IApplicationContext.cs" />
-    <Compile Include="Parsers\NameValueParser.cs" />
+    <Compile Include="Parsers\Parser.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="Parsers\Options.cs" />
     <Compile Include="Parsers\ObjectParser.cs" />

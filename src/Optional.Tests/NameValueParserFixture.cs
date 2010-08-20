@@ -13,7 +13,7 @@ namespace Optional.Tests
             var longs = 0;
             var values = 0;
 
-            var parser = new NameValueParser
+            var parser = new Parser
                              {
                                  OnShortOption = name => { shorts++; },
                                  OnLongOption = name => { longs++; },
@@ -35,7 +35,7 @@ namespace Optional.Tests
             var longs = new List<string>();
             var values = new List<string>();
 
-            var parser = new NameValueParser
+            var parser = new Parser
                              {
                                  OnShortOption = shorts.Add,
                                  OnLongOption = longs.Add,
@@ -70,7 +70,7 @@ namespace Optional.Tests
         {
             var options = new List<Option>();
 
-            var parser = new NameValueParser
+            var parser = new Parser
                              {
                                  OnShortOption = name => options.Add(new Option {ShortName = name}),
                                  OnLongOption = name => options.Add(new Option {LongName = name}),

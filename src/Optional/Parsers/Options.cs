@@ -10,7 +10,7 @@ namespace Optional.Parsers
         {
             var options = new List<Option>();
 
-            var parser = new NameValueParser
+            var parser = new Parser
                              {
                                  OnShortOption = name => options.Add(new Option {ShortName = name}),
                                  OnLongOption = name => options.Add(new Option {LongName = name}),

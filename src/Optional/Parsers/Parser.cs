@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Optional.Parsers
 {
-    public class NameValueParser
+    public class Parser
     {
         public Action<string> OnShortOption = name => { };
 
