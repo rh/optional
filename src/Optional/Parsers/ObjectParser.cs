@@ -19,12 +19,15 @@ namespace Optional.Parsers
 
         public Action<string> OnMissingOption = arg => { throw new MissingOptionException(arg); };
 
-        private IList<Option> availableOptions = new List<Option>();
-        private readonly IList<Option> setOptions = new List<Option>();
+        public T Parse<T>(string[] args) where T : new()
+        {
+            return Parse(args, new T());
+        }
 
         public T Parse<T>(string[] args, T options)
         {
-            availableOptions = Options.Create(options);
+            var availableOptions = Options.Create(options);
+            var setOptions = new List<Option>();
             Option current = null;
 
             for (var i = 0; i < args.Length; i++)
@@ -34,13 +37,17 @@ namespace Optional.Parsers
                 {
                     var name = arg.Substring(1);
 
-                    var option = FindByShortName(setOptions, name);
+                    var option = (from o in setOptions
+                                  where o.ShortName == name
+                                  select o).FirstOrDefault();
                     if (option != null)
                     {
                         OnDuplicateOption(option);
                     }
 
-                    option = FindByShortName(availableOptions, name);
+                    option = (from o in availableOptions
+                              where o.ShortName == name
+                              select o).FirstOrDefault();
                     if (option == null)
                     {
                         OnInvalidOption(name);
@@ -60,13 +67,17 @@ namespace Optional.Parsers
                 {
                     var name = arg.Substring(2);
 
-                    var option = FindByLongName(setOptions, name);
+                    var option = (from o in setOptions
+                                  where o.LongName == name
+                                  select o).FirstOrDefault();
                     if (option != null)
                     {
                         OnDuplicateOption(option);
                     }
 
-                    option = FindByLongName(availableOptions, name);
+                    option = (from o in availableOptions
+                              where o.LongName == name
+                              select o).FirstOrDefault();
                     if (option == null)
                     {
                         OnInvalidOption(name);
@@ -97,17 +108,6 @@ namespace Optional.Parsers
                 }
             }
 
-            CheckRequiredOptions(options);
-            return options;
-        }
-
-        public T Parse<T>(string[] args) where T : new()
-        {
-            return Parse(args, new T());
-        }
-
-        private void CheckRequiredOptions<T>(T options)
-        {
             foreach (var option in availableOptions)
             {
                 var value = option.Property.GetValue(options, null);
@@ -124,20 +124,8 @@ namespace Optional.Parsers
                     throw new RequirementException(option);
                 }
             }
-        }
 
-        private static Option FindByShortName(IEnumerable<Option> options, string shortName)
-        {
-            return (from option in options
-                    where option.ShortName == shortName
-                    select option).FirstOrDefault();
-        }
-
-        private static Option FindByLongName(IEnumerable<Option> options, string longName)
-        {
-            return (from option in options
-                    where option.LongName == longName
-                    select option).FirstOrDefault();
+            return options;
         }
     }
 }
