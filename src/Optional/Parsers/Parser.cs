@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Optional.Exceptions;
 
@@ -127,26 +128,16 @@ namespace Optional.Parsers
 
         private static Option FindByShortName(IEnumerable<Option> options, string shortName)
         {
-            foreach (var option in options)
-            {
-                if (option.ShortName.Equals(shortName))
-                {
-                    return option;
-                }
-            }
-            return null;
+            return (from option in options
+                    where option.ShortName == shortName
+                    select option).FirstOrDefault();
         }
 
         private static Option FindByLongName(IEnumerable<Option> options, string longName)
         {
-            foreach (var option in options)
-            {
-                if (option.LongName.Equals(longName))
-                {
-                    return option;
-                }
-            }
-            return null;
+            return (from option in options
+                    where option.LongName == longName
+                    select option).FirstOrDefault();
         }
     }
 }
