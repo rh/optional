@@ -19,14 +19,14 @@ namespace Optional.Parsers
                                                    if (options.Count > 0)
                                                    {
                                                        var last = options[options.Count - 1];
-                                                       if (last.Value == string.Empty)
-                                                       {
-                                                           last.Value = value;
-                                                           return;
-                                                       }
+                                                       last.AddValue(value);
                                                    }
-
-                                                   options.Add(new Option {Value = value});
+                                                   else
+                                                   {
+                                                       var option = new Option();
+                                                       option.AddValue(value);
+                                                       options.Add(option);
+                                                   }
                                                }
                              };
             parser.Parse(args);

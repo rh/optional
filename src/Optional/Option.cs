@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Optional.Attributes;
@@ -15,8 +16,29 @@ namespace Optional
 
         public bool Required { get; set; }
 
-        /// <summary>The value given on the command-line.</summary>
-        public string Value { get; set; }
+        public string Value
+        {
+            get
+            {
+                if (values.Count > 0)
+                {
+                    return values[0];
+                }
+                return string.Empty;
+            }
+        }
+
+        public IList<string> Values
+        {
+            get { return values; }
+        }
+
+        private readonly List<string> values = new List<string>();
+
+        public void AddValue(string value)
+        {
+            values.Add(value);
+        }
 
         public Type Type { get; set; }
 
@@ -28,7 +50,6 @@ namespace Optional
             LongName = string.Empty;
             Description = string.Empty;
             Required = false;
-            Value = string.Empty;
         }
 
         public Option(PropertyInfo property)
@@ -37,7 +58,6 @@ namespace Optional
             LongName = LongNameOf(property);
             Description = DescriptionOf(property);
             Required = IsRequired(property);
-            Value = string.Empty;
             Type = TypeOf(property);
             Property = property;
         }

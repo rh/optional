@@ -24,11 +24,34 @@ namespace Optional.Parsers
             return Parse(args, new T());
         }
 
-        public T Parse<T>(string[] args, T options)
+        public T Parse<T>(string[] args, T obj)
         {
-            var availableOptions = Options.Create(options);
+            var availableOptions = Options.Create(obj);
             var setOptions = new List<Option>();
             Option current = null;
+
+//            var options = new List<Option>();
+//
+//            var parser = new Parser
+//                             {
+//                                 OnShortOption = name => options.Add(new Option {ShortName = name}),
+//                                 OnLongOption = name => options.Add(new Option {LongName = name}),
+//                                 OnValue = value =>
+//                                               {
+//                                                   if (options.Count > 0)
+//                                                   {
+//                                                       var last = options[options.Count - 1];
+//                                                       last.AddValue(value);
+//                                                   }
+//                                                   else
+//                                                   {
+//                                                       var option = new Option();
+//                                                       option.AddValue(value);
+//                                                       options.Add(option);
+//                                                   }
+//                                               }
+//                             };
+//            parser.Parse(args);
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -56,7 +79,7 @@ namespace Optional.Parsers
                     // TODO: duplicate code
                     if (option != null && option.Type == typeof(bool))
                     {
-                        option.Property.SetValue(options, true, null);
+                        option.Property.SetValue(obj, true, null);
                     }
 
                     current = option;
@@ -86,7 +109,7 @@ namespace Optional.Parsers
                     // TODO: duplicate code
                     if (option != null && option.Type == typeof(bool))
                     {
-                        option.Property.SetValue(options, true, null);
+                        option.Property.SetValue(obj, true, null);
                     }
 
                     current = option;
@@ -101,8 +124,8 @@ namespace Optional.Parsers
                     }
                     else
                     {
-                        current.Value = arg;
-                        current.Property.SetValue(options, arg, null);
+                        current.AddValue(arg);
+                        current.Property.SetValue(obj, arg, null);
                         current = null;
                     }
                 }
@@ -110,7 +133,7 @@ namespace Optional.Parsers
 
             foreach (var option in availableOptions)
             {
-                var value = option.Property.GetValue(options, null);
+                var value = option.Property.GetValue(obj, null);
                 if (option.Required && (value == null || String.IsNullOrEmpty(value.ToString())))
                 {
                     throw new RequirementException(option);
@@ -125,7 +148,7 @@ namespace Optional.Parsers
                 }
             }
 
-            return options;
+            return obj;
         }
     }
 }

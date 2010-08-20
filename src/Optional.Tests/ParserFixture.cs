@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Optional.Parsers;
 using Xunit;
@@ -74,7 +75,7 @@ namespace Optional.Tests
                              {
                                  OnShortOption = name => options.Add(new Option {ShortName = name}),
                                  OnLongOption = name => options.Add(new Option {LongName = name}),
-                                 OnValue = value => { options[options.Count - 1].Value = value; }
+                                 OnValue = value => options[options.Count - 1].AddValue(value)
                              };
 
             var args = new[] {"-1", "1", "-2:2", "-3=3", "--44", "4", "--55:5", "--66=6"};
@@ -93,6 +94,28 @@ namespace Optional.Tests
                 var option = options[i];
                 Assert.Equal((i + 1).ToString(), option.Value);
             }
+        }
+
+        [Fact]
+        public void DuplicateValues()
+        {
+            var options = new List<Option> {new Option()};
+            var parser = new Parser
+                             {
+                                 OnShortOption = name => { throw new Exception(); },
+                                 OnLongOption = name => { throw new Exception(); },
+                                 OnValue = value => options[options.Count - 1].AddValue(value)
+                             };
+
+            var args = new[] {"1", "2", "3"};
+            parser.Parse(args);
+
+            Assert.Equal(1, options.Count);
+            Assert.Equal("1", options[0].Value);
+            Assert.Equal(3, options[0].Values.Count);
+            Assert.Equal("1", options[0].Values[0]);
+            Assert.Equal("2", options[0].Values[1]);
+            Assert.Equal("3", options[0].Values[2]);
         }
     }
 }
