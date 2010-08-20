@@ -46,7 +46,7 @@
     <Compile Include="NameValueParserFixture.cs" />
     <Compile Include="OptionParserFixture.cs" />
     <Compile Include="TestOptions.cs" />
-    <Compile Include="ParserFixture.cs" />
+    <Compile Include="ObjectParserFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

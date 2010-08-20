@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Optional.Tests
 {
-    public class ParserFixture
+    public class ObjectParserFixture
     {
         [Fact]
         public void ShortOptionRegex()
