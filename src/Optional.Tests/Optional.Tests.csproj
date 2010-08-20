@@ -43,7 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NameValueParserFixture.cs" />
+    <Compile Include="ParserFixture.cs" />
     <Compile Include="OptionParserFixture.cs" />
     <Compile Include="TestOptions.cs" />
     <Compile Include="ObjectParserFixture.cs" />

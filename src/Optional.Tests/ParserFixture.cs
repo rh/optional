@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Optional.Tests
 {
-    public class NameValueParserFixture
+    public class ParserFixture
     {
         [Fact]
         public void Actions()
