@@ -23,7 +23,7 @@ namespace TestApp
                 var command = factory.Create(args);
                 command.Execute();
 
-//                var options = new Parser().Parse<TestAppOptions>(args);
+//                var options = new ObjectParser().Parse<TestAppOptions>(args);
 //                Console.WriteLine(options);
             }
             catch (Exception e)

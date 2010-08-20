@@ -6,7 +6,7 @@ using Optional.Exceptions;
 
 namespace Optional.Parsers
 {
-    public class Parser
+    public class ObjectParser
     {
         public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
         public static Regex ShortOptionWithValue = new Regex("^-[a-zA-Z0-9]{1}[:=]{1}(.+)$");

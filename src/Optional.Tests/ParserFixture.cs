@@ -10,62 +10,62 @@ namespace Optional.Tests
         [Fact]
         public void ShortOptionRegex()
         {
-            Assert.True(Parser.ShortOption.IsMatch("-f"));
-            Assert.False(Parser.ShortOption.IsMatch("--f"));
-            Assert.False(Parser.ShortOption.IsMatch("-f:foo"));
-            Assert.False(Parser.ShortOption.IsMatch("-foo"));
+            Assert.True(ObjectParser.ShortOption.IsMatch("-f"));
+            Assert.False(ObjectParser.ShortOption.IsMatch("--f"));
+            Assert.False(ObjectParser.ShortOption.IsMatch("-f:foo"));
+            Assert.False(ObjectParser.ShortOption.IsMatch("-foo"));
         }
 
         [Fact]
         public void ShortOptionWithValueRegex()
         {
-            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f:foo"));
-            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f:f"));
-            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f=foo"));
-            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f=f"));
-            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f="));
-            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f:"));
-            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f"));
-            Assert.False(Parser.ShortOptionWithValue.IsMatch("--f"));
-            Assert.False(Parser.ShortOptionWithValue.IsMatch("-foo"));
+            Assert.True(ObjectParser.ShortOptionWithValue.IsMatch("-f:foo"));
+            Assert.True(ObjectParser.ShortOptionWithValue.IsMatch("-f:f"));
+            Assert.True(ObjectParser.ShortOptionWithValue.IsMatch("-f=foo"));
+            Assert.True(ObjectParser.ShortOptionWithValue.IsMatch("-f=f"));
+            Assert.False(ObjectParser.ShortOptionWithValue.IsMatch("-f="));
+            Assert.False(ObjectParser.ShortOptionWithValue.IsMatch("-f:"));
+            Assert.False(ObjectParser.ShortOptionWithValue.IsMatch("-f"));
+            Assert.False(ObjectParser.ShortOptionWithValue.IsMatch("--f"));
+            Assert.False(ObjectParser.ShortOptionWithValue.IsMatch("-foo"));
         }
 
         [Fact]
         public void LongOptionRegex()
         {
-            Assert.True(Parser.LongOption.IsMatch("--foo"));
-            Assert.False(Parser.LongOption.IsMatch("-f"));
-            Assert.False(Parser.LongOption.IsMatch("-f:"));
-            Assert.False(Parser.LongOption.IsMatch("--"));
-            Assert.False(Parser.LongOption.IsMatch("-foo"));
+            Assert.True(ObjectParser.LongOption.IsMatch("--foo"));
+            Assert.False(ObjectParser.LongOption.IsMatch("-f"));
+            Assert.False(ObjectParser.LongOption.IsMatch("-f:"));
+            Assert.False(ObjectParser.LongOption.IsMatch("--"));
+            Assert.False(ObjectParser.LongOption.IsMatch("-foo"));
         }
 
         [Fact]
         public void LongOptionWithValueRegex()
         {
-            Assert.True(Parser.LongOptionWithValue.IsMatch("--foo:bar"));
-            Assert.True(Parser.LongOptionWithValue.IsMatch("--foo=bar"));
-            Assert.True(Parser.LongOptionWithValue.IsMatch("--foo:x"));
-            Assert.True(Parser.LongOptionWithValue.IsMatch("--foo=x"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("--foo:"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("--foo"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("-f"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("-f:"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("--"));
-            Assert.False(Parser.LongOptionWithValue.IsMatch("-foo"));
+            Assert.True(ObjectParser.LongOptionWithValue.IsMatch("--foo:bar"));
+            Assert.True(ObjectParser.LongOptionWithValue.IsMatch("--foo=bar"));
+            Assert.True(ObjectParser.LongOptionWithValue.IsMatch("--foo:x"));
+            Assert.True(ObjectParser.LongOptionWithValue.IsMatch("--foo=x"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("--foo:"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("--foo"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("-f"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("-f:"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("--"));
+            Assert.False(ObjectParser.LongOptionWithValue.IsMatch("-foo"));
         }
 
         [Fact]
         public void Parse()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             parser.Parse<TestOptions>(new[] {"-f", "foo", "-b", "bar"});
         }
 
         [Fact]
         public void ParseWithLongNames()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse<TestOptions>(new[] {"--foo", "foo", "--bar", "bar", "--foo-bar", "foobar"});
@@ -85,7 +85,7 @@ namespace Optional.Tests
         [Fact]
         public void ParseOptionAndValue()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             var options = parser.Parse<TestOptions>(new[] {"-f", "foo"});
             Assert.Equal(options.Foo, "foo");
         }
@@ -93,7 +93,7 @@ namespace Optional.Tests
         [Fact]
         public void ParseValueWithoutOption()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse<TestOptions>(new[] {"foo"});
@@ -108,7 +108,7 @@ namespace Optional.Tests
         [Fact]
         public void ParseDuplicateOptionWithValue()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse<TestOptions>(new[] {"-f", "foo", "-f"});
@@ -123,7 +123,7 @@ namespace Optional.Tests
         [Fact]
         public void ParseDuplicateOptionWithoutValue()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse<TestOptions>(new[] {"-f", "-f"});
@@ -138,7 +138,7 @@ namespace Optional.Tests
         [Fact]
         public void ParseInvalidOption()
         {
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse<TestOptions>(new[] {"-x"});
@@ -156,7 +156,7 @@ namespace Optional.Tests
             const string Value = "This is a pre-set value.";
 
             var options = new TestOptions {Foo = Value};
-            var parser = new Parser();
+            var parser = new ObjectParser();
             parser.Parse(new string[] {}, options);
             Assert.Equal(Value, options.Foo);
             Assert.Null(options.Bar);
@@ -168,7 +168,7 @@ namespace Optional.Tests
         public void CreateWithObject2()
         {
             var options = new TestOptions();
-            var parser = new Parser();
+            var parser = new ObjectParser();
             try
             {
                 parser.Parse(new string[] {}, options);
@@ -184,7 +184,7 @@ namespace Optional.Tests
         public void CreateWithObject3()
         {
             var options = new TestOptions();
-            var parser = new Parser();
+            var parser = new ObjectParser();
             parser.Parse(new[] {"--foo", "foo", "-s"}, options);
             Assert.Equal("foo", options.Foo);
             Assert.True(options.Switch, "Switch should be true.");

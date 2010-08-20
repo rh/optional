@@ -22,23 +22,23 @@ namespace Optional.Parsers
             {
                 var arg = args[i];
 
-                if (Parser.ShortOptionWithValue.IsMatch(arg))
+                if (ObjectParser.ShortOptionWithValue.IsMatch(arg))
                 {
                     var values = Regex.Split(arg, "[:=]");
                     OnShortOption(values[0].Substring(1));
                     OnValue(values[1]);
                 }
-                else if (Parser.ShortOption.IsMatch(arg))
+                else if (ObjectParser.ShortOption.IsMatch(arg))
                 {
                     OnShortOption(arg.Substring(1));
                 }
-                else if (Parser.LongOptionWithValue.IsMatch(arg))
+                else if (ObjectParser.LongOptionWithValue.IsMatch(arg))
                 {
                     var values = Regex.Split(arg, "[:=]");
                     OnLongOption(values[0].Substring(2));
                     OnValue(values[1]);
                 }
-                else if (Parser.LongOption.IsMatch(arg))
+                else if (ObjectParser.LongOption.IsMatch(arg))
                 {
                     OnLongOption(arg.Substring(2));
                 }

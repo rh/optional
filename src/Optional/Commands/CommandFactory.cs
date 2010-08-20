@@ -76,7 +76,7 @@ namespace Optional.Commands
 					// command wants to process the supplied command-line arguments on its own
 					return command;
 				}
-				return new Parser().Parse(arguments, command);
+				return new ObjectParser().Parse(arguments, command);
 			}
 
 			// No command found. Consider 'name' to be the first part of a command
@@ -97,7 +97,7 @@ namespace Optional.Commands
 					// command wants to process the supplied command-line arguments on its own
 					return command;
 				}
-				return new Parser().Parse(arguments, command);
+				return new ObjectParser().Parse(arguments, command);
 			}
 
 			if (matches.Count > 1)
