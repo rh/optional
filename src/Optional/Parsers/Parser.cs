@@ -5,10 +5,10 @@ namespace Optional.Parsers
 {
     public class Parser
     {
-        public static Regex ShortOption = new Regex("^-[a-zA-Z0-9]{1}$");
-        public static Regex ShortOptionWithValue = new Regex("^-[a-zA-Z0-9]{1}[:=]{1}(.+)$");
-        public static Regex LongOption = new Regex("^--[-a-zA-Z0-9]{1,}$");
-        public static Regex LongOptionWithValue = new Regex("^--[-a-zA-Z0-9]{1,}[:=]{1}([^:=]+)$");
+        public static Regex ShortOption = new Regex("^-([a-zA-Z0-9]{1})$");
+        public static Regex ShortOptionWithValue = new Regex("^-([a-zA-Z0-9]{1})[:=]{1}(.+)$");
+        public static Regex LongOption = new Regex("^--([-a-zA-Z0-9]{1,})$");
+        public static Regex LongOptionWithValue = new Regex("^--([-a-zA-Z0-9]{1,})[:=]{1}([^:=]+)$");
 
         public Action<string> OnShortOption = name => { };
         public Action<string> OnLongOption = name => { };
@@ -21,35 +21,80 @@ namespace Optional.Parsers
         /// <param name="args">The command-line arguments of the application.</param>
         public void Parse(string[] args)
         {
-            for (var i = 0; i < args.Length; i++)
+            foreach (var arg in args)
             {
-                var arg = args[i];
+                if (ShortOptionWithValueMatches(arg))
+                {
+                    continue;
+                }
 
-                if (ShortOptionWithValue.IsMatch(arg))
+                if (ShortOptionMatches(arg))
                 {
-                    var values = Regex.Split(arg, "[:=]");
-                    OnShortOption(values[0].Substring(1));
-                    OnValue(values[1]);
+                    continue;
                 }
-                else if (ShortOption.IsMatch(arg))
+
+                if (LongOptionWithValueMatches(arg))
                 {
-                    OnShortOption(arg.Substring(1));
+                    continue;
                 }
-                else if (LongOptionWithValue.IsMatch(arg))
+
+                if (LongOptionMatches(arg))
                 {
-                    var values = Regex.Split(arg, "[:=]");
-                    OnLongOption(values[0].Substring(2));
-                    OnValue(values[1]);
+                    continue;
                 }
-                else if (LongOption.IsMatch(arg))
-                {
-                    OnLongOption(arg.Substring(2));
-                }
-                else
-                {
-                    OnValue(arg);
-                }
+
+                OnValue(arg);
             }
+        }
+
+        private bool ShortOptionWithValueMatches(string input)
+        {
+            var matches = ShortOptionWithValue.Matches(input);
+            if (matches.Count == 1 && matches[0].Groups.Count == 3)
+            {
+                OnShortOption(matches[0].Groups[1].Value);
+                OnValue(matches[0].Groups[2].Value);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ShortOptionMatches(string input)
+        {
+            var matches = ShortOption.Matches(input);
+            if (matches.Count == 1 && matches[0].Groups.Count == 2)
+            {
+                OnShortOption(matches[0].Groups[1].Value);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool LongOptionWithValueMatches(string input)
+        {
+            var matches = LongOptionWithValue.Matches(input);
+            if (matches.Count == 1 && matches[0].Groups.Count == 3)
+            {
+                OnLongOption(matches[0].Groups[1].Value);
+                OnValue(matches[0].Groups[2].Value);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool LongOptionMatches(string input)
+        {
+            var matches = LongOption.Matches(input);
+            if (matches.Count == 1 && matches[0].Groups.Count == 2)
+            {
+                OnLongOption(matches[0].Groups[1].Value);
+                return true;
+            }
+
+            return false;
         }
     }
 }

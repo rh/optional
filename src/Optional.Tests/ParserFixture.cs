@@ -8,6 +8,20 @@ namespace Optional.Tests
     public class ParserFixture
     {
         [Fact]
+        public void ShortOptionWithValueRegex()
+        {
+            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f:foo"));
+            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f:f"));
+            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f=foo"));
+            Assert.True(Parser.ShortOptionWithValue.IsMatch("-f=f"));
+            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f="));
+            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f:"));
+            Assert.False(Parser.ShortOptionWithValue.IsMatch("-f"));
+            Assert.False(Parser.ShortOptionWithValue.IsMatch("--f"));
+            Assert.False(Parser.ShortOptionWithValue.IsMatch("-foo"));
+        }
+
+        [Fact]
         public void Actions()
         {
             var shorts = 0;
