@@ -74,6 +74,7 @@
     <Compile Include="Option.cs" />
     <Compile Include="Parsers\Options.cs" />
     <Compile Include="Parsers\ObjectParser.cs" />
+    <Compile Include="Parsers\PatternMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
